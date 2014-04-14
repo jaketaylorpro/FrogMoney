@@ -14,7 +14,7 @@ router.get('/', function(req, res) {
             });
         },
         function(callback) {
-            req.app.get('db').expenses.find({id:req.cookies.id},function(err,obj){
+            req.app.get('db').expenses.getExpensesForUserId(req.cookies.id,function(err,obj){
                 console.log('expenses results: '+moment().toISOString()+': '+util.inspect(err)+','+util.inspect(obj));
                 callback(err,obj);
             });

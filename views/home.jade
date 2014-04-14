@@ -2,33 +2,50 @@ extends layout
 
 block content
     h1= "welcome " + user.name
-    p= "email: " + user.email
-    img(url=user.picture)
-    if expenses == null || expenses.length ==0
-        p no expenses
-    else
-        div.FMDataTable
-            table
-                thead
-                    tr
-                        each key in Object.keys(expenses[0])
-                            td=key
-                tbody
-                    each expense in expenses
+    h3.chead user info
+        div.cpanel
+            p= "email: " + user.email
+            img(src=user.picture,width=50,height=50)
+    h3.chead expenses
+        div.cpanel
+            if expenses == null || expenses.length ==0
+                p no expenses
+            else
+                div.FMDataTable
+                    table
+                        thead
+                            tr
+                                each key in Object.keys(expenses[0])
+                                    td=key
+                        tbody
+                            each expense in expenses
+                                tr
+                                    each key in Object.keys(expense)
+                                        td=expense[key] == null ? '' : expense[key].toString()
+    h3.chead add new expense
+        div.cpanel
+            div.ipanel
+                form(action='/home/insert_expense',method='post')
+                    table
                         tr
-                            each key in Object.keys(expense)
-                                td=expense[key] == null ? '' : expense[key].toString()
-    form(action='/home/insert_expense',method='post')
-        ul date
-            input#insert_expense_date(name='date',type='text')
-        ul event
-            input#insert_expense_event(name='event',type='text')
-        ul amount
-            input#insert_expense_amount(name='amount',type='text')
-        ul description
-            input#insert_expense_description(name='description',type='text')
-        input#insert_expense_id(name='id',type='hidden',value=user.id)
-        input#insert_expenses_timestamp(name='timestamp',type='hidden',value=Date.now())
-        ul
-            input#insert_expense_submit(type='submit',value='add')
+                            td date
+                            td
+                                input#insert_expense_date(name='date',type='text')
+                        tr
+                            td event
+                            td
+                                input#insert_expense_event(name='event',type='text')
+                        tr
+                            td amount
+                            td
+                                input#insert_expense_amount(name='amount',type='text')
+                        tr
+                            td description
+                            td
+                                input#insert_expense_description(name='description',type='text')
+
+                    input#insert_expense_id(name='id',type='hidden',value=user.id)
+                    input#insert_expenses_timestamp(name='timestamp',type='hidden',value=Date.now())
+                    div
+                        input#insert_expense_submit(type='submit',value='add')
 
