@@ -1,0 +1,10 @@
+extends layout
+block content
+  h1= title
+  p
+    |Welcome to #{title},
+    |this site will be used to track Ironside's expenses for the 2014 season.
+    |This site uses google authentication;
+    |please click the login button and enter your credentials
+    |for the google account that is a member of the "Ironside 2014 Tryout Google Group"
+  a.button(href=auth_url) log in with google

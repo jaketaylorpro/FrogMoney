@@ -1,0 +1,20 @@
+extends layout
+block content
+    h1= "welcome to " + title + ";the time is: " + time
+    p active users
+    if loading
+        p loading ...
+    else if users == null || users.length ==0
+        p no users
+    else
+        div.FMDataTable
+            table
+                thead
+                    tr
+                        each key in Object.keys(users[0])
+                            td=key
+                tbody
+                    each user in users
+                        tr
+                            each key in Object.keys(user)
+                                td=user[key]

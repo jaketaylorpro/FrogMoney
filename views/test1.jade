@@ -1,0 +1,11 @@
+extends layout
+block content
+    h1= "welcome "+name+",to " + title
+    p= "the time is: " + time
+    if tokens
+        p= "token detected"+tokens
+    p please log into to #{title}
+    form(action='/test1/test1_submit',method='post')
+        input#test1_input(name='user',type='text',value='username')
+        input#test1_submit(type='submit',value='testButton')
+    a.button(href=auth_url) log in with google
