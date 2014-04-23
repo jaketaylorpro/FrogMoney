@@ -11,7 +11,14 @@ router.get('/', function(req, res) {
         if(err)
         {
             res.render('login', {
-                title: req.app.get('title'),
+                navbar:{
+                    title:req.app.get('title'),
+                    links:[
+                        {text:'Users',active:false,href:'#'},
+                        {text:'Test',active:true,href:'#'},
+                        {text:'Home',active:false,href:'#'}
+                    ]
+                },
                 auth_url:req.app.get('authhelper').auth_url,
                 auth_refresh:true
             });
@@ -29,8 +36,15 @@ router.get('/', function(req, res) {
   }
   else
   {
-      res.render('login', {
-          title: req.app.get('title'),
+      res.render('login',{
+              navbar:{
+                  title:req.app.get('title'),
+                  links:[
+                      {text:'Users',active:false,href:'#'},
+                      {text:'Test',active:true,href:'#'},
+                      {text:'Home',active:false,href:'#'}
+                  ]
+              },
           auth_url:req.app.get('authhelper').auth_url
       });
   }

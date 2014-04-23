@@ -1,12 +1,19 @@
 var console = require('console');
 var util = require('util');
+var fs = require('fs');
 var jsonfile = require('jsonfile');
 var googleapis = require('googleapis');
 var OAuth2Client = googleapis.OAuth2Client;
 
 /*load secret file and oath cache file*/
-var secretFile='json\\client_secret_30662632074-cml8ab025jtcatdm3fsu6k3d7qbtav2n.apps.googleusercontent.com.json';
-var secret=jsonfile.readFileSync(secretFile);
+var files=fs.readdirSync('json');
+var secret;
+for(var i=0;i<files.length;i++){
+    if(files[i].substr(0,14)=='client_secret_'){
+        secret=jsonfile.readFileSync('json\\'+files[i]);
+        break;
+    }
+}
 
 function newOAuth2Client()
 {

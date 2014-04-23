@@ -1,0 +1,22 @@
+extends bootstrap
+block header-content
+    nav(class='navbar navbar-default',role='navigation')
+        div.container-fluid
+            div.navbar-header
+                button.navbar-toggle(type='button',data-toggle='collapse',data-target='#frogmoney-navbar-collapse')
+                    span.sr-only Toggle navigation
+                    span.icon-bar
+                    span.icon-bar
+                    span.icon-bar
+                a.navbar-brand(href='#') #{navbar.title}
+            div#frogmoney-navbar-collapse(class='collapse navbar-collapse')
+                ul(class='nav navbar-nav')
+                    each link in navbar.links
+                        if link.active
+                            li.active: a(href='#{link.href}') #{link.text}
+                        else
+                            li: a(href='#{link.href}') #{link.text}
+
+
+
+

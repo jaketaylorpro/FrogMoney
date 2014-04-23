@@ -1,0 +1,12 @@
+extends bootstrap
+block header-content
+    div.page-header
+        ul(class='nav nav-pills pull-right')
+            each link in navbar.links
+                if link.active
+                    li.active: a(href='#{link.href}') #{link.text}
+                else
+                    li: a(href='#{link.href}') #{link.text}
+        h3.text-muted #{navbar.title}
+
+
