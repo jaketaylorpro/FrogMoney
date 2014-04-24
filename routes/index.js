@@ -10,18 +10,7 @@ router.get('/', function(req, res) {
       req.app.get('authhelper').getUserInfo(req.cookies.tokens,function(err,obj){
         if(err)
         {
-            res.render('login', {
-                navbar:{
-                    title:req.app.get('title'),
-                    links:[
-                        {text:'Users',active:false,href:'#'},
-                        {text:'Test',active:true,href:'#'},
-                        {text:'Home',active:false,href:'#'}
-                    ]
-                },
-                auth_url:req.app.get('authhelper').auth_url,
-                auth_refresh:true
-            });
+            showLogin(req,res);
         }
         else
         {
@@ -36,18 +25,23 @@ router.get('/', function(req, res) {
   }
   else
   {
-      res.render('login',{
-              navbar:{
-                  title:req.app.get('title'),
-                  links:[
-                      {text:'Users',active:false,href:'#'},
-                      {text:'Test',active:true,href:'#'},
-                      {text:'Home',active:false,href:'#'}
-                  ]
-              },
-          auth_url:req.app.get('authhelper').auth_url
-      });
+      showLogin(req,res);
   }
 });
+
+function showLogin(req,res){
+    res.render('login', {
+        navbar:{
+            title:req.app.get('title'),
+            links:[
+                {text:'Splash',active:true,href:'#',newWindow:false},
+                //{text:'GoogleGroup',active:false,href:'https://groups.google.com/forum/#!members/ironside-ultimate-2014',newWindow:true},
+                {text:'Contact',active:false,href:'mailto:wildmanjake+frogmoney@gmail.com',newWindow:false}
+            ]
+        },
+        auth_url:req.app.get('authhelper').auth_url,
+        auth_refresh:true
+    });
+}
 
 module.exports = router;
