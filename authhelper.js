@@ -1,9 +1,10 @@
-var console = require('console');
 var util = require('util');
 var fs = require('fs');
 var jsonfile = require('jsonfile');
 var googleapis = require('googleapis');
 var OAuth2Client = googleapis.OAuth2Client;
+var logger=require('log4js').getLogger('fm.authhelper');
+var https = require('https');
 
 /*load secret file and oath cache file*/
 var files=fs.readdirSync('json');
@@ -23,25 +24,29 @@ function getUserInfo(tokens,callback)
 {
     var oauth2client =newOAuth2Client();
     oauth2client.setCredentials(tokens);
-    /*
-    googleapis.discover('oauth2','v2').execute(function(err,client){
-        console.log('auth_api: '+util.inspect(client));
-    });
-    googleapis.discover('plus','v1').execute(function(err,client){
-        console.log('+api: '+util.inspect(client));
-    });
-    */
     googleapis.discover('oauth2','v2').execute(function(err,client){
         client.oauth2.userinfo.get().withAuthClient(oauth2client).execute(function(err,obj){
-            console.log('userinfoobj: '+util.inspect(obj));
+            logger.trace('userinfoobj: '+util.inspect(obj));
             callback(err,obj);
         });
     });
 }
+function getGroupInfo(groupKey,memberKey,callback)
+{
+    var path='https://www.googleapis.com/admin/directory/v1/groups/'+groupKey+'/members/'+memberKey;
+    https.get(path,function(res){
+        callback(null,res);
+    }).on('error',function(error){
+        callback(error,null);
+    });
+}
+exports.getGroupInfo=getGroupInfo;
 exports.newOAuth2Client=newOAuth2Client;
 exports.getUserInfo=getUserInfo;
 var oauth2Client=newOAuth2Client();
 exports.auth_url=oauth2Client.generateAuthUrl({
     access_type: 'offline',
-    scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
+    scope: 'https://www.googleapis.com/auth/userinfo.email '+
+            'https://www.googleapis.com/auth/userinfo.profile '+
+            'https://www.googleapis.com/auth/admin.directory.group.readonly'
 });

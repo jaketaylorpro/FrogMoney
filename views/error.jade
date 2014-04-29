@@ -1,6 +1,7 @@
-extends layout
-
-block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+extends bootstrapNav
+block body-content
+    div.jumbotron
+        h1 Oops :(
+        h3.text-danger= message
+        h4.text-danger= error.status
+        pre #{error.stack}

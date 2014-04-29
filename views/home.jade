@@ -1,6 +1,6 @@
-extends layout
-
-block content
+extends bootstrapNav
+include bootstrapMixins
+block body-content
     h1= "welcome " + user.name
     h3.chead user info
         div.cpanel
@@ -22,7 +22,7 @@ block content
                                 tr
                                     each key in Object.keys(expense)
                                         td=expense[key] == null ? '' : expense[key].toString()
-    h3.chead add new expense
+     h3.chead add new expense
         div.cpanel
             div.ipanel
                 form(action='/home/insert_expense',method='post')

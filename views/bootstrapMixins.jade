@@ -1,0 +1,12 @@
+mixin dataTable(header,data,boardered)
+    div.table-responsive
+        table.table.table-bordered.table-striped.table-condensed
+            thead.fm-table-header
+                tr
+                    each key in Object.keys(header)
+                        td=key
+                tbody
+                    each row in data
+                        tr
+                            each key in Object.keys(header)
+                                td=row[key] == null ? '' : row[key].toString()

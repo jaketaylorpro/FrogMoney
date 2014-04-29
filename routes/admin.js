@@ -1,9 +1,9 @@
 var express = require('express');
 var moment = require('moment');
-var console = require('console');
-var util = require('util');
 var async = require('async');
 var router = express.Router();
+var log4js = require('log4js');
+var logger = log4js.getLogger('fm.admin');
 /* GET users listing. */
 router.get('/', function(req, res) {
     var locals={
@@ -26,9 +26,9 @@ router.get('/', function(req, res) {
     {
         if(err)
         {
-            console.log('err: '+util.inspect(err));
+            throw err;
         }
-        console.log('got response')
+        logger.trace('got response');
         locals.loading=false;
         locals.users=results[0];
         locals.expenses=results[1];

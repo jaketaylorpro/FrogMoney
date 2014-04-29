@@ -1,2 +1,3 @@
 node_modules
-json/client_secret.*
+json/*_secret_.*
+json/log4js.json

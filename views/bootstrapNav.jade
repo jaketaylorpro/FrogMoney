@@ -1,22 +1,75 @@
 extends bootstrap
 block header-content
-    nav(class='navbar navbar-default',role='navigation')
-        div.container-fluid
-            div.navbar-header
-                button.navbar-toggle(type='button',data-toggle='collapse',data-target='#frogmoney-navbar-collapse')
-                    span.sr-only Toggle navigation
-                    span.icon-bar
-                    span.icon-bar
-                    span.icon-bar
-                a.navbar-brand(href='#') #{navbar.title}
-            div#frogmoney-navbar-collapse(class='collapse navbar-collapse')
-                ul(class='nav navbar-nav')
-                    each link in navbar.links
-                        if link.active
-                            li.active: a(href='#{link.href}') #{link.text}
-                        else
-                            li: a(href='#{link.href}') #{link.text}
+    div.page-header
+        nav(class='navbar navbar-default',role='navigation')
+            div.container-fluid
+                div.navbar-header
+                    button.navbar-toggle(type='button',data-toggle='collapse',data-target='#frogmoney-navbar-collapse')
+                        span.sr-only Toggle navigation
+                        span.icon-bar
+                        span.icon-bar
+                        span.icon-bar
+                    a.navbar-brand#brand #{navbar.title}
+                div#frogmoney-navbar-collapse(class='collapse navbar-collapse')
+                    ul(class='nav navbar-nav')
+                        each link in navbar.links
+                            if link.active
+                                li.active: a(href='#{link.href}') #{link.text}
+                            else
+                                li: a(href='#{link.href}') #{link.text}
+                    ul(class='nav navbar-nav navbar-right')
+                        li: a(href='#',data-toggle='modal',data-target='#infoModal')
+                            span.glyphicon.glyphicon-question-sign
+                            span  Info
 
-
+                        li(class=(navbar.logoutDisabled?'disabled':'')): a(href='/logout')
+                            span(class='glyphicon glyphicon-user')
+                            span  Logout
+                        li(class=(navbar.homeDisabled?'disabled':'')): a(href='/')
+                            span(class='glyphicon glyphicon-home')
+                            span  Home
+    div.modal.fade#infoModal(tabindex='-1',role='dialog',aria-labelledby='infoModalLabel' aria-hidden='true')
+        div.modal-dialog
+            div.modal-content
+                div.modal-header.fm-modal-header
+                    button.close(type='button',data-dismiss='modal',aria-hidden='true') &times;
+                    h1.modal-title.fm-modal-title#infoModalLabel Info
+                div.modal-body
+                    div
+                        p.fm-info-text
+                            |This website was developed for Boston Ironside by Jake Taylor.
+                            |Frogmoney employs a number of interesting web technologies including:
+                        ul.fm-strong-list
+                            li
+                                span.strong NodeJS
+                                span a server side javascript platform
+                            li
+                                span.strong Express
+                                span a nodejs webframework
+                            li
+                                span.strong Bootstrap
+                                span responsive styling framework developed by twitter
+                            li
+                                span.strong NeDB
+                                span a flatfile document database
+                            li
+                                span.strong OAuth2
+                                span a third party authentication protocol
+                            li
+                                span.strong Sytlus
+                                span a terse CSS syntax language
+                            li
+                                span.strong Jade
+                                span a html templating language with great integration to Express.
+                            li
+                                span.strong Loggly
+                                span cloud logging
+                            li
+                                span.strong Log4js
+                                span a javascript logging framework
+                        p
+                            |FrogMoney and all of it's content is publicly available on github.
+                            |feel free to provide new features and content by forking and pull requesting changes.
+                            a(href='http://github.com/jaketaylorpro/frogmoney',target='_blank') github.com/jaketaylorpro/frogmoney
 
 
