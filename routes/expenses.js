@@ -15,7 +15,7 @@ router.get('/', function(req, res) {
             });
         },
         function(callback) {
-            req.app.get('db').expenses.getExpensesForUserId(req.cookies.id,function(err,obj){
+            req.app.get('db').getExpensesForUserId(req.cookies.id,function(err,obj){
                 logger.trace('expenses results: '+util.inspect(err)+','+util.inspect(obj));
                 callback(err,obj);
             });
@@ -41,6 +41,7 @@ router.post('/insert_expense',function(req,res){
     logger.trace('post called: ');
     //logger.trace(util.inspect(req,{depth:null}));
     logger.trace(req.body);
+    //req.app.get('db').insertExpense()
     req.app.get('db').expenses.insert(req.body,function(err,obj){
         if(err)
         {

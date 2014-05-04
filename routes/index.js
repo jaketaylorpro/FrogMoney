@@ -6,7 +6,11 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  if(req.cookies.tokens)
+  if(req.query.warning)
+  {
+      showLogin(req,res,req.query.warning);
+  }
+  else if(req.cookies.tokens)
   {
       req.app.get('authhelper').getUserInfo(req.cookies.tokens,function(err,obj){
         if(err)

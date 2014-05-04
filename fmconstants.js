@@ -3,7 +3,6 @@ exports.title='FrogMoney';
 exports.cookieNames=['tokens','id'];
 exports.textLoginErrorExpired='Your credentials have expired, please authenticate again.';
 exports.textLoginErrorUnknown='There was an error authenticating with google. make sure you have cookies and javascript enabled and try again.';
-exports.googleGroupKey='ironside-ultimate-2014@googlegroups.com';
 var defNavbar={
     title:exports.title,
     links:[

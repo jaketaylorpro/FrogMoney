@@ -1,3 +1,5 @@
 node_modules
 json/*_secret_*
 json/log4js.json
+db
+db_test

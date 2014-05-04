@@ -1,48 +1,16 @@
 #!/usr/bin/env node
 var debug = require('debug')('my-application');
 var app = require('../app.js');
-var Datastore= require('nedb');
-var console = require('console');
-var util = require('util');
-var authhelper = require('../authhelper.js');
+var FmDataMgr = require('../FmDataMgr.js');
+var FmAuthHelper = require('../FmAuthHelper.js');
+var logger = require('log4js').getLogger('fm.www');
 /*set global app properties*/
-var db={};
-db.users = new Datastore({ filename: 'db/users.db', autoload: true });
-db.expenses = new Datastore({ filename: 'db/expenses.db', autoload: true });
-db.expenses.getExpensesForUserId=function(id,callback){
-    db.expenses.find({id:id}).sort({event:1}).exec(function(err,obj){
-        if(err)
-        {
-            callback(err,null)
-        }
-        else
-        {
-            callback(null,mongoProjection(obj,{date:1,event:1,amount:1,description:1}));
-        }
-    });
-};
+var dataMgr=new FmDataMgr('db');
+var authHelper=new FmAuthHelper(dataMgr);
 app.set('port', process.env.PORT || 3000);
-app.set('db',db);
-app.set('authhelper',authhelper);
-
+app.set('db',dataMgr);
+app.set('authhelper',authHelper);
+/*start server*/
 var server = app.listen(app.get('port'), function() {
   debug('Express server listening on port ' + server.address().port);
 });
-function mongoProjection(collection,projection){
-    console.log('collection: '+util.inspect(collection));
-    console.log('projection: '+util.inspect(projection));
-    var ret =[];
-    for (var i=0;i<collection.length;i++)
-    {
-        var o = collection[i];
-        console.log("o: "+util.inspect(o));
-        var d={};
-        for (key in projection)
-        {
-            console.log("setting: "+key+" to "+o[key]+" for "+util.inspect(d)+" from "+util.inspect(o));
-            d[key]=o[key];
-        }
-        ret.push(d);
-    }
-    return ret;
-}
