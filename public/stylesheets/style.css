@@ -16,6 +16,9 @@ a {
   text-align: center;
   text-transform: capitalize;
 }
+.fm-nav li a {
+  padding-right: 5px;
+}
 .panel-primary .panel-heading a {
   font-size: 125%;
   text-decoration: none;

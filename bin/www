@@ -5,12 +5,12 @@ var FmDataMgr = require('../FmDataMgr.js');
 var FmAuthHelper = require('../FmAuthHelper.js');
 var logger = require('log4js').getLogger('fm.www');
 /*set global app properties*/
-var dataMgr=new FmDataMgr('db');
-var authHelper=new FmAuthHelper(dataMgr);
+var dataMgr = new FmDataMgr('db');
+var authHelper = new FmAuthHelper(dataMgr);
 app.set('port', process.env.PORT || 3000);
-app.set('db',dataMgr);
-app.set('authhelper',authHelper);
+app.set('dataMgr', dataMgr);
+app.set('authhelper', authHelper);
 /*start server*/
 var server = app.listen(app.get('port'), function() {
-  debug('Express server listening on port ' + server.address().port);
+	debug('Express server listening on port ' + server.address().port);
 });
