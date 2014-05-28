@@ -71,24 +71,35 @@ FmAuthHelper.prototype.verifyAuthentication = function(tokens, callback) {
 		else {
 			callback(err,null);
 		}
+		return;
 	};
 	d.on('error',errHandler);//this doesn't seem to work
-	d.on('uncaughtException',errHandler);//this doesn't seem to work
+	//d.on('uncaughtException',errHandler);//this doesn't seem to work
 	d.run(function() {
-		oauth2client.verifyIdToken(tokens.id_token,client_id,function(err,obj){
-			if(err) {
-				logger.warn('error verifying token: '+tokens.id_token);
-				callback(err,null);
-				return
-			}
-			else {
-				logger.trace('verified: '+tokens.id_token);
-				//obj has a getEnvelope and getPayload method
-				var payload=obj.getPayload();
-				logger.trace('payload: '+util.inspect(payload));
-				dataMgr.memberIsAllowed(payload,callback);
-			}
-		});
+		try
+		{
+			oauth2client.verifyIdToken(tokens.id_token,client_id,function(err,obj){
+				if(err) {
+					logger.warn('error verifying token: '+tokens.id_token);
+					callback(err,null);
+					return;
+				}
+				else {
+					logger.trace('verified: '+tokens.id_token);
+					//obj has a getEnvelope and getPayload method
+					var payload=obj.getPayload();
+					logger.trace('payload: '+util.inspect(payload));
+					dataMgr.memberIsAllowed(payload,callback);
+				}
+			});
+		}
+		catch(err)
+		{
+			logger.warn('error verifying token: '+tokens.id_token+'; '+ util.inspect(err));
+			callback(err,null);
+			return;
+		}
+
 	});
 	/*
 	oauth2client.
@@ -124,7 +135,7 @@ FmAuthHelper.prototype.verifyAndHandleAuthentication = function(tokens,req,res,c
 	this.verifyAuthentication(tokens, function(err,obj) {
 		if(err) {
 			logger.trace('authenticationFailed: ' + err);
-			this.logout(req,res,'/?warning=verificationFailed');
+			logout(req,res,'/?warning=verificationFailed');
 			//callback(err,null);
 		}
 		else if(!obj.allowed) {

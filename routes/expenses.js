@@ -29,7 +29,8 @@ router.get('/', function(req, res) {
 			navbar: constants.getNavbar('expenses'),
 			user: results[0],
 			expensesHeader: expensesHeader,
-			expensesData: results[1]
+			expensesData: results[1],
+			event: req.query.event
 		});
 	});
 });

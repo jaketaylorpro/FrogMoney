@@ -17,13 +17,75 @@ FmDataMgr.prototype.getUserById = function(id,callback) {
 FmDataMgr.prototype.getExpensesForUserId = function(id, callback) {
 	this.db.expenses.find({id: id}).sort({event: 1}).exec(function(err, obj) {
 		if(err) {
-			callback(err, null)
+			callback(err, null);
 		}
 		else {
 			callback(null, mongoProjection(obj, {date: 1, event: 1, amount: 1, description: 1}));
 		}
 	});
 };
+FmDataMgr.prototype.getPaymentsForUserId = function(id, callback) {
+	if(this.db.payments) {
+		this.db.payments.find({id: id}).sort({event: 1}).exec(function(err, obj) {
+			if(err) {
+				callback(err, null);
+			}
+			else {
+				callback(null, mongoProjection(obj, {date: 1, event: 1, amount: 1, description: 1,dueId: 1}));
+			}
+		});
+	}
+	else {
+		callback(null, []);
+	}
+}
+FmDataMgr.prototype.getTransfersForUserId = function(id, callback) {
+	if(this.db.transfers){
+		this.db.transfers.find({id: id}).sort({event: 1}).exec(function(err, obj) {
+			if(err) {
+				callback(err, null);
+			}
+			else {
+				callback(null, mongoProjection(obj, {date: 1, event: 1, amount: 1, description: 1}));
+			}
+		});
+	}
+	else{
+		callback(null,[]);
+	}
+};
+FmDataMgr.prototype.getDues = function(callback) {
+	if(this.db.dues){
+		this.db.dues.find().exec(function(err,obj){
+			if(err) {
+				callback(err,null);
+			}
+			else {
+				callback(null, mongoProjection(obj,{name:1,date:1,amount:1}));
+			}
+		});
+	}
+	else{
+		callback(null,{date: '2014-07-01',name: 'test dues',amount:100.00})
+	}
+}
+FmDataMgr.prototype.getCurrentEvent = function(callback) {
+	var yesterday = new Date();
+	yesterday.setDate(yesterday.getDate()-1);
+	if(this.db.events){
+		this.db.events.find({date_end:{"$gte":yesterday}}).sort({date_start:1}).limit(1).exec(function(err,obj){
+			if(err) {
+				callback(err,null);
+			}
+			else{
+				callback(null,mongoProjection(obj,{date_start:1,date_end:1,name:1,description:1}));
+			}
+		});
+	}
+	else{
+		callback(null,{date_start: new Date(2014,07,01),date_end:new Date(2014,07,04),name:'usopen',description:'the first tournamet of the year'});
+	}
+}
 FmDataMgr.prototype.memberIsAllowed = function(payload, callback) {
 	this.db.members.find({email: payload.email}, function(err, obj) {
 		if(err)
