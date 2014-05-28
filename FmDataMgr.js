@@ -24,17 +24,26 @@ FmDataMgr.prototype.getExpensesForUserId = function(id, callback) {
 		}
 	});
 };
-FmDataMgr.prototype.memberIsAllowed = function(email, allowedCallback, notAllowedCallback) {
-	this.db.members.find({email: email}, function(err, obj) {
-		if(obj == []) {
-			allowedCallback();
+FmDataMgr.prototype.memberIsAllowed = function(payload, callback) {
+	this.db.members.find({email: payload.email}, function(err, obj) {
+		if(err)
+		{
+			logger.warn('error finding member: '+err);
+			callback(err,null);
 		}
-		else {
-			notAllowedCallback(err);
+		else{
+			logger.info('found member: '+util.inspect(obj));
+			if(obj.length>0) { //not found returns empty array []
+				logger.trace('sending found');
+				callback(null,{allowed:true,payload:payload,member:obj[0]});
+			}
+			else {
+				logger.trace('sending not found');
+				callback(null,{allowed:false,payload:payload,member:obj[0]});
+			}
 		}
 	});
 };
-
 function mongoProjection(collection, projection) {
 	logger.trace('collection: ' + util.inspect(collection));
 	logger.trace('projection: ' + util.inspect(projection));

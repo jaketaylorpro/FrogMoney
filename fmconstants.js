@@ -3,6 +3,7 @@ exports.title = 'FrogMoney';
 exports.cookieNames = ['tokens', 'id'];
 exports.warningsText = {
 	test:'Test warning text.',
+	notAllowed:'Your email address is not in the allowed list. Please authenticate using the gmail address associated with the ironside tryout list.',
 	verificationFailed:'Verification of your login token failed, please authenticate again.',
 	verificationFailedExpired: 'Your credentials have expired, please authenticate again.',
 	loginError:'There was an error while logging in, make sure you have cookies and javascript enabled and try again.'

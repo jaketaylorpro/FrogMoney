@@ -14,7 +14,7 @@ router.get('/', function(req, res) {
 				               callback(err, obj);
 			               });
 		               }, function(callback) {
-			req.app.get('dataMgr').db.getExpensesForUserId(req.cookies.id, function(err, obj) {
+			req.app.get('dataMgr').getExpensesForUserId(req.cookies.id, function(err, obj) {
 				logger.trace('expenses results: ' + util.inspect(err) + ',' + util.inspect(obj));
 				callback(err, obj);
 			});

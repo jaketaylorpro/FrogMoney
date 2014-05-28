@@ -65,38 +65,53 @@ function parallelTest() {
 function isAllowedTest(db) {
 	var testEmail = 'test@abc.com';
 	db.members.insertSync({email: testEmail});
-	db.isAllowed(db.memberIsAllowed(testEmail), function() {
-		             logger.info('isAllowedTest-base passed');
-	             }, function(err) {
+	db.isAllowed(db.memberIsAllowed(testEmail), function(err,obj) {
 		             if(err) {
-			             logger.error('isAllowedTest-base failed, error: ' + util.inspect(err));
-		             }
-		             else {
 			             logger.error('isAllowedTest-base failed');
 		             }
+		             else {
+			             if(obj)
+			             {
+				             logger.info('isAllowedTest-base passed');
+			             }
+			             else
+			             {
+				             logger.error('isAllowedTest-base failed, error: ' + util.inspect(err));
+			             }
+		             }
 	             });
-	db.isAllowed(db.memberIsAllowed('Test@abc.com'), function() {
-		             logger.info('isAllowedTest-case passed');
-	             }, function(err) {
+	db.isAllowed(db.memberIsAllowed('Test@abc.com'), function(err,obj) {
 		             if(err) {
 			             logger.error('isAllowedTest-case failed, error: ' + util.inspect(err));
 		             }
 		             else {
-			             logger.error('isAllowedTest-case failed');
+			             if(obj)
+			             {
+				             logger.info('isAllowedTest-case passed');
+			             }
+			             else
+			             {
+				             logger.error('isAllowedTest-case failed');
+			             }
 		             }
 	             });
 	db.isAllowed(db.memberIsAllowed('nosuch@abc.com'), function() {
-		             logger.info('isAllowedTest-false failed');
-	             }, function(err) {
+
+	             }, function(err,obj) {
 		             if(err) {
 			             logger.error('isAllowedTest failed, error: ' + util.inspect(err));
 		             }
 		             else {
-			             logger.error('isAllowedTest passed');
+			             if(obj)
+			             {
+				             logger.info('isAllowedTest-false failed');
+			             }
+			             else {
+				             logger.error('isAllowedTest passed');
+			             }
 		             }
 	             });
 }
-function
 function getExpensesForUserIdTest(db) {
 
 }

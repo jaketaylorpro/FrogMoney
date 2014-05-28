@@ -57,6 +57,7 @@ app.use(function(err, req, res, next) {
 		error: (app.get('env') === 'development' ? err : {}),
 		navbar: {title: constants.title}
 	});
+	next(err);
 });
 
 

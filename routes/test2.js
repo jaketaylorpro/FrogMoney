@@ -10,9 +10,16 @@ router.get('/', function(req, res) {
 			logger.trace('authenticationFailed: ' + err);
 			res.redirect('/?warning=verificationFailed');
 		}
+		else if(!obj.allowed) {
+			logger.trace('authenticationFailed: email not allowed');
+			res.redirect('/?warning=notAllowed');
+		}
 		else {
+
+			logger.trace('authentication succeded');
 			res.render('test2', {
-				navbar: constants.getNavbar('test2')
+				navbar: constants.getNavbar('test2'),
+				name: obj.payload.email
 			});
 		}
 	});

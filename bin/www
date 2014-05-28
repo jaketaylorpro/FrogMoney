@@ -4,6 +4,7 @@ var app = require('../app.js');
 var FmDataMgr = require('../FmDataMgr.js');
 var FmAuthHelper = require('../FmAuthHelper.js');
 var logger = require('log4js').getLogger('fm.www');
+var util = require('util');
 /*set global app properties*/
 var dataMgr = new FmDataMgr('db');
 var authHelper = new FmAuthHelper(dataMgr);
