@@ -7,13 +7,17 @@ block body-content
         div.row
             div.col-md-12
                 div.row
-                    div.col-md-6
+                    div.col-md-8
                         h2 Welcome #{user.name}
-                        p.lead You have successfully logged into FrogMoney
-                    div.col-md-6
+                        p.lead
+                            |You have successfully logged into FrogMoney.
+                            |Go to the expenses tab to see your existing expenses, or to add a new one.
+                            |Go to the payments tab to see your existing payments, or to log a new one.
+                    div.col-md-4
                         div.thumbnail
                             img(src=user.picture,width=50,height=50)
-                            div.caption.text-center: h3 #{user.email}
+                            div.caption.text-center
+                                p #{user.email}
 
     div.row
         div.col-md-12
@@ -28,5 +32,6 @@ block body-content
                 div.col-md-6
                     div.panel.panel-primary
                         div.panel-heading: h3.panel-title Current Event: #{event.name}
-                        | #{event.description}
-                        p: a.btn.btn-success(role="button",href="/expenses?event=event.name") Add Expense
+                        div.panel-body
+                            p.lead #{event.description}
+                            p: a.btn.btn-primary(role="button",href="/expenses?event=event.name") Add Expense

@@ -10,3 +10,6 @@ mixin dataTable(header,data,boardered)
                         tr
                             each key in Object.keys(header)
                                 td=row[key] == null ? '' : row[key].toString()
+mixin dataSelect(list)
+    each v in list
+        option(value=v) #{v}

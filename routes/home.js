@@ -32,6 +32,7 @@ router.get('/', function(req, res) {
 			var transfers = results[3];
 			var dues = results[4];
 			var event = results[5];
+			logger.info('event loaded: '+util.inspect(event));
 			res.render('home', {
 				navbar: constants.getNavbar('home'),
 				user: user,
