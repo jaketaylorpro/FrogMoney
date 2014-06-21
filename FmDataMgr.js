@@ -1,4 +1,5 @@
 var util = require('util');
+var async = require('async');
 var Datastore = require('nedb');
 var logger = require('log4js').getLogger('fm.FmDataMgr');
 
@@ -26,6 +27,53 @@ FmDataMgr.prototype.getExpensesForUserId = function(id, callback) {
 		}
 	});
 };
+FmDataMgr.prototype.getExpensesForEvent = function(event, callback) {
+	var dis = this;
+	this.db.expenses.find({event: event}).sort({date: 1}).exec(function(err, obj) {
+		if(err) {
+			callback(err, null);
+		}
+		else {
+			var asyncCalls=[]
+			obj.map(function(o){
+				logger.info("event found, player_id: "+util.inspect(o));
+
+				asyncCalls.push(function(callbackAsync){
+					dis.getUserById(o.id,function(err,player) {
+						logger.info("player found: "+util.inspect(player));
+						if(err) {
+							callback(err);
+						}
+						else
+						{
+							if(player) {
+								o.player_name=player.name;
+							}
+							callbackAsync(null,o);
+						}
+					});
+				});
+			});
+			async.parallel(asyncCalls,function(err,results){
+				logger.info('got async expense player lookup results: '+util.inspect(results));
+				callback(null, mongoProjection(results, {date: 1, event: 1, amount: 1, description: 1}));
+			});
+		}
+	});
+};
+FmDataMgr.prototype.getExpensesForCurrentEvent = function(callback) {
+	var dis = this;
+	this.getCurrentEvent(function(err,obj){
+		if(err) {
+			callback(err,null);
+		}
+		else
+		{
+			dis.getExpensesForEvent(obj.name,callback);
+		}
+	});
+}
+
 FmDataMgr.prototype.getPaymentsForUserId = function(id, callback) {
 	this.db.payments.find({id: id}).sort({event: 1}).exec(function(err, obj) {
 		if(err) {

@@ -1,0 +1,52 @@
+extends bootstrapNav
+include bootstrapMixins
+- paymentMethods=['Paypal','Bank of America','Check','Cash'];
+block body-content
+    div.panel.panel-primary
+        div.panel-heading(data-toggle='collapse',data-target='#new-expense-body'): a(href='#new-expense-body')
+            | Record a new payment
+        div.panel-collapse.collapse.in#new-expense-body: div.panel-body
+            div.panel-body
+                form.form-inline(action='/payments/insert_payment',method='post',role='form')
+                    div.form-group
+                        label(for='insert_payment_date') Date Paid
+                        div.col-sm-4.input-group.input-group-sm.date#insert_payment_date_group
+                            input.form-control#insert_payment_date(name='date',type='text',placeholder='yyyy-mm-dd')
+                            span.input-group-addon: i.glyphicon.glyphicon-calendar
+                    div.form-group
+                        label(for='insert_payment_event') Dues Name
+                        div.col-sm-4.input-group.input-group-sm
+                            select.form-control#insert_payment_event(name='dues',value=dues)
+                                +dataSelect(allDuesNames)
+                    div.form-group
+                        label(for='insert_payment_amount') Amount
+                        div.col-sm-4.input-group.input-group-sm
+                            span.input-group-addon $
+                            input.form-control#insert_payment_amount(name='amount',type='text',placeholder='0.00')
+                    div.form-group
+                    label(for='insert_payment_event') Payment Method
+                    div.col-sm-4.input-group.input-group-sm
+                        select.form-control#insert_payment_event(name='method')
+                            +dataSelect(paymentMethods)
+                    div.form-group
+                        label(for='insert_payment_description') Confirmation Number
+                        div.col-sm-4.input-group.input-group-sm
+                            input.form-control#insert_payment_description(name='description',type='text',placeholder='ex. 4 bottles of sunblock',style='width:100%')
+                    input#insert_payment_id(name='id',type='hidden',value=user.id)
+                    input#insert_payments_timestamp(name='timestamp',type='hidden',value=Date.now())
+                    p(style='padding-top:7px;margin-left:-15px;')
+                        button.btn.btn-primary.btn-sm(type='submit') Add Expense
+    div.panel.panel-primary
+        div.panel-heading(data-toggle='collapse',data-target='#expenses-body'): a(href='#expenses-body')
+            |Expenses
+        div.panel-collapse.collapse.in#expenses-body: div.panel-body
+            p Expenses explanation
+            +dataTable(expensesHeader,expensesData,true)
+block additional-scripts-2
+    script(src='/eternicode-bootstrap-datepicker/js/bootstrap-datepicker.js')
+    script.
+        $('#insert_payment_date_group').datepicker({
+            format: "yyyy-mm-dd",
+            autoclose: true,
+            todayHighlight: true
+        });

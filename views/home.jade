@@ -22,16 +22,22 @@ block body-content
     div.row
         div.col-md-12
             div.row
-                div.col-md-6
+                div.col-md-4
                     ul.list-group
                         li.list-group-item Your account summary is as follows
-                        li.list-group-item.list-group-item-success #{numPayments} Payments totaling #{totalPayments}
-                        li.list-group-item.list-group-item-info #{numExpenses} Expenses totaling #{totalExpenses}
-                        li.list-group-item.list-group-item-warning #{numTransfers} Transfers totaling #{totalTransfers}
+                        li.list-group-item.list-group-item-success #{numPayments} Payments totaling $#{totalPayments}
+                        li.list-group-item.list-group-item-info #{numExpenses} Expenses totaling $#{totalExpenses}
+                        li.list-group-item.list-group-item-warning #{numTransfers} Transfers totaling $#{totalTransfers}
                         li.list-group-item.list-group-item-danger #{numDuesPaid} of #{numDues} Dues paid
-                div.col-md-6
+                div.col-md-8
                     div.panel.panel-primary
                         div.panel-heading: h3.panel-title Current Event: #{event.name}
                         div.panel-body
                             p.lead #{event.description}
-                            p: a.btn.btn-primary(role="button",href="/expenses?event=event.name") Add Expense
+                            if eventExpenses && eventExpenses.length > 0
+                                ul.list-group
+                                each expense in eventExpenses
+                                    li.list-group-item.list-group-item-info #{expense.player_name} got #{expense.description} for $#{expense.amount} on #{expense.date}
+                            else
+                                p No Expenses Yet.
+                        p: a.btn.btn-primary(role="button",href="/expenses?event=event.name") Add Expense
