@@ -18,7 +18,7 @@ router.get('/', function(req, res) {
 				dataMgr.getPaymentsForUserId(objTop.payload.id, callback);
 			},
 		    function(callback) {
-				dataMgr.getAllDues({name:'.'},callback);// dot in a projection is a special case, it will return just the value and not an object
+				dataMgr.getDues({name:'.'},callback);// dot in a projection is a special case, it will return just the value and not an object
 		    }
 		], function(err,results){
 			var user=results[0];

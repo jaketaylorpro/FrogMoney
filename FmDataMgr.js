@@ -80,7 +80,7 @@ FmDataMgr.prototype.getPaymentsForUserId = function(id, callback) {
 			callback(err, null);
 		}
 		else {
-			callback(null, mongoProjection(obj, {date: 1, event: 1, amount: 1, description: 1,dueId: 1}));
+			callback(null, mongoProjection(obj, {date: 1, dues: 1, amount: 1, method: 1,confirm: 1}));
 		}
 	});
 }

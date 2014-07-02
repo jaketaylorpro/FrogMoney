@@ -19,6 +19,10 @@ block body-content
                             select.form-control#insert_expense_event(name='event',value=event)
                                 +dataSelect(allEventNames)
                     div.form-group
+                        label(for='insert_expense_sub_event') Sub Event
+                        div.col-sm-4.input-group.input-group-sm
+                            input.form-control#insert_expense_sub_event(name='sub-event',type='text')
+                    div.form-group
                         label(for='insert_expense_amount') Amount
                         div.col-sm-4.input-group.input-group-sm
                             span.input-group-addon $
