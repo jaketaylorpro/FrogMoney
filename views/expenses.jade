@@ -23,6 +23,14 @@ block body-content
                         div.col-sm-4.input-group.input-group-sm
                             input.form-control#insert_expense_sub_event(name='sub-event',type='text')
                     div.form-group
+                        label(for='insert_expense_member_group') Member Group
+                        div.col-sm-4.input-group.input-group-sm
+                            select.form-control#insert_expense_member_group(name='member-group')
+                                +dataSelect(allGroupNames)
+                            span.input-group-addon
+                                a.btn-sm#editMemberGroupBtn(role='button',href='#',data-toggle='modal',data-target='#editGroupModal')
+                                    span.glyphicon.glyphicon-eye-open
+                    div.form-group
                         label(for='insert_expense_amount') Amount
                         div.col-sm-4.input-group.input-group-sm
                             span.input-group-addon $
@@ -41,6 +49,18 @@ block body-content
         div.panel-collapse.collapse.in#expenses-body: div.panel-body
             p Expenses explanation
             +dataTable(expensesHeader,expensesData,true)
+    div.modal.fade#editGroupModal(tabindex='-1',role='dialog',aria-labelledby='editGroupModalLabel' aria-hidden='true')
+        div.modal-dialog
+            div.modal-content
+                div.modal-header.fm-modal-header
+                    button.close(type='button',data-dismiss='modal',aria-hidden='true') &times;
+                    h1.modal-title.fm-modal-title#editGroupModalLabel
+                div.modal-body
+                    each group in allGroups
+                        div.viewGroupMemberPane(id="viewGroupMembers-#{group.name}")
+                            ul
+                                each member in group.members
+                                    ul.small "#{member}"
 block additional-scripts-2
     script(src='/eternicode-bootstrap-datepicker/js/bootstrap-datepicker.js')
     script.
@@ -48,4 +68,26 @@ block additional-scripts-2
             format: "yyyy-mm-dd",
             autoclose: true,
             todayHighlight: true
+        });
+    script.
+        function updateGroupMembers(groupName) {
+            $('#editGroupModalLabel').html(groupName);
+            $('.viewGroupMemberPane').hide();
+            $('#viewGroupMembers-'+groupName).show();
+            console.log('updated '+groupName);
+        }
+        var selectedMemberGroup=false;
+        var changeHandler=function() {
+            updateGroupMembers(this.value);
+            selectedMemberGroup=this.value;
+            console.log('changeHandler');
+        };
+        var clickHandler=function() {
+            updateGroupMembers(selectedMemberGroup || $('#insert_expense_member_group option')[0].value);
+            console.log('clickHandler');
+        };
+        $(document).ready(function(){
+            $("#editMemberGroupBtn").click(clickHandler);
+            $('#insert_expense_member_group').change(changeHandler);
+            //$('#editGroupModal').onfocus(focusHandler);
         });

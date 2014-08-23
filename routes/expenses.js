@@ -19,11 +19,22 @@ router.get('/', function(req, res) {
 			},
 		    function(callback) {
 				dataMgr.getAllEvents({name:'.'},callback);// dot in a projection is a special case, it will return just the value and not an object
+		    },
+		    function(callback) {
+			    dataMgr.getAllGroups(callback);
 		    }
 		], function(err,results){
 			var user=results[0];
 			var expenses=results[1];
 			var allEventNames=results[2];
+			var allGroups=results[3];
+			var allGroupsHash={};
+			var allGroupNames=[];
+			for(var i=0;i<allGroups.length;i++)
+			{
+				allGroupNames.push(allGroups[i].name);
+				allGroupsHash[allGroups[i].name]=allGroups[i];
+			}
 			logger.trace('expenses callback: ' + util.inspect(err) + ',' + util.inspect(results));
 			res.render('expenses', {
 				navbar: constants.getNavbar('expenses'),
@@ -31,7 +42,9 @@ router.get('/', function(req, res) {
 				expensesHeader: expensesHeader,
 				expensesData: expenses,
 				event: req.query.event,
-				allEventNames: allEventNames
+				allEventNames: allEventNames,
+				allGroups: allGroups,
+				allGroupNames: allGroupNames
 			});
 		});
 	});

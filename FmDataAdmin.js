@@ -1,10 +1,12 @@
 var util = require('util');
 var Datastore = require('nedb');
 var logger = require('log4js').getLogger('fm.FmDataMgr');
+var FmDataMgr = require('./FmDataMgr.js');
 
 function FmDataAdmin(dir) {
 	var dataMgr=new FmDataMgr(dir);
 	this.db = dataMgr.db;
+	this.dataMgr=dataMgr;
 }
 function addEvent(dataAdmin)
 {
@@ -25,7 +27,29 @@ function addDue(dataAdmin)
 		dataAdmin.db.dues.insert(dues1);
 	}
 }
+function addEveryoneGroup(dataAdmin)
+{
+	dataAdmin.db.members.find({},function(err,obj){
+		dataAdmin.dataMgr.addGroup(
+			{owner_id:'100603670659836830855',name:'everyone',members:dataAdmin.dataMgr.__mongo_projection(obj,{email:'.'})},
+			function(err,obj){
+				logger.info(err);
+				logger.info(obj);
+		});
+	})
+}
+function addNewGroup(dataAdmin,name,members)
+{
+	dataAdmin.dataMgr.addGroup(
+		{owner_id:'100603670659836830855',name:name,members:members},
+		function(err,obj){
+			logger.info(err);
+			logger.info(obj);
+		});
+}
 
 var dataAdmin=new FmDataAdmin('db')
-/addEvent(dataAdmin);
-addDue(dataAdmin);
+//addEvent(dataAdmin);
+//addDue(dataAdmin);
+//addEveryoneGroup(dataAdmin);
+addNewGroup(dataAdmin,'frogGroup',['wildmanjake@gmail.com']);

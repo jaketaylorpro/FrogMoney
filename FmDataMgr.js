@@ -12,18 +12,20 @@ function FmDataMgr(dir) {
 	this.db.events = new Datastore({ filename: dir + '/events.db', autoload: true });
 	this.db.transfers = new Datastore({ filename: dir + '/transfers.db', autoload: true });
 	this.db.dues = new Datastore({ filename: dir + '/dues.db', autoload: true });
+	this.db.groups = new Datastore({ filename: dir + '/groups.db', autoload: true });
 	logger.trace('created data manager with databases');
 }
 FmDataMgr.prototype.getUserById = function(id,callback) {
 	this.db.users.findOne({id:id},callback);
 };
 FmDataMgr.prototype.getExpensesForUserId = function(id, callback) {
+	var dis = this;
 	this.db.expenses.find({id: id}).sort({event: 1}).exec(function(err, obj) {
 		if(err) {
 			callback(err, null);
 		}
 		else {
-			callback(null, mongoProjection(obj, {date: 1, event: 1, amount: 1, description: 1}));
+			callback(null, dis.__mongo_projection(obj, {date: 1, event: 1, amount: 1, description: 1}));
 		}
 	});
 };
@@ -56,7 +58,7 @@ FmDataMgr.prototype.getExpensesForEvent = function(event, callback) {
 			});
 			async.parallel(asyncCalls,function(err,results){
 				logger.info('got async expense player lookup results: '+util.inspect(results));
-				callback(null, mongoProjection(results, {date: 1, event: 1, amount: 1, description: 1}));
+				callback(null, dis.__mongo_projection(results, {date: 1, event: 1, amount: 1, description: 1}));
 			});
 		}
 	});
@@ -75,36 +77,40 @@ FmDataMgr.prototype.getExpensesForCurrentEvent = function(callback) {
 }
 
 FmDataMgr.prototype.getPaymentsForUserId = function(id, callback) {
+	var dis=this;
 	this.db.payments.find({id: id}).sort({event: 1}).exec(function(err, obj) {
 		if(err) {
 			callback(err, null);
 		}
 		else {
-			callback(null, mongoProjection(obj, {date: 1, dues: 1, amount: 1, method: 1,confirm: 1}));
+			callback(null, dis.__mongo_projection(obj, {date: 1, dues: 1, amount: 1, method: 1,confirm: 1}));
 		}
 	});
 }
 FmDataMgr.prototype.getTransfersForUserId = function(id, callback) {
+	var dis=this;
 	this.db.transfers.find({id: id}).sort({event: 1}).exec(function(err, obj) {
 		if(err) {
 			callback(err, null);
 		}
 		else {
-			callback(null, mongoProjection(obj, {date: 1, event: 1, amount: 1, description: 1}));
+			callback(null, dis.__mongo_projection(obj, {date: 1, event: 1, amount: 1, description: 1}));
 		}
 	});
 };
 FmDataMgr.prototype.getDues = function(callback) {
+	var dis=this;
 	this.db.dues.find().exec(function(err,obj){
 		if(err) {
 			callback(err,null);
 		}
 		else {
-			callback(null, mongoProjection(obj,{name:1,date:1,amount:1}));
+			callback(null, dis.__mongo_projection(obj,{name:1,date:1,amount:1}));
 		}
 	});
 }
 FmDataMgr.prototype.getCurrentEvent = function(callback) {
+	var dis=this;
 	var yesterday = new Date();
 	yesterday.setDate(yesterday.getDate()-1);
 	this.db.events.find({date_end:{"$gte":yesterday}}).sort({date_start:1}).limit(1).exec(function(err,obj){
@@ -112,18 +118,19 @@ FmDataMgr.prototype.getCurrentEvent = function(callback) {
 			callback(err,null);
 		}
 		else{
-			events=mongoProjection(obj,{date_start:1,date_end:1,name:1,description:1});
+			events=dis.__mongo_projection(obj,{date_start:1,date_end:1,name:1,description:1});
 			callback(null,events.length>0?events[0]:{});
 		}
 	});
 }
 FmDataMgr.prototype.getAllEvents = function(projection,callback) {
+	var dis=this;
 	this.db.events.find().exec(function(err,obj){
 		if(err) {
 			callback(err,null);
 		}
 		else{
-			events=mongoProjection(obj,projection||{date_start:1,date_end:1,name:1,description:1});
+			events=dis.__mongo_projection(obj,projection||{date_start:1,date_end:1,name:1,description:1});
 			callback(null,events);
 		}
 	});
@@ -148,7 +155,54 @@ FmDataMgr.prototype.memberIsAllowed = function(payload, callback) {
 		}
 	});
 };
-function mongoProjection(collection, projection) {
+FmDataMgr.prototype.getAllGroups = function(callback) {
+	this.db.groups.find({},function(err,obj){
+		if(err)
+		{
+			logger.warn('error getting groups: '+err);
+		}
+		else
+		{
+			logger.info('found groups: '+util.inspect(obj));
+			callback(null,obj);
+		}
+	} );
+};
+FmDataMgr.prototype.addGroup = function(groupObj,callback) {
+	var groupsDb=this.db.groups;
+	if(groupObj.name == null)
+	{
+		logger.warn('group has no name: '+util.inspect(groupObj));
+		callback('group must have a name');
+	}
+	else {
+		this.db.groups.find({name:new RegExp(groupObj.name,"i")},function(err,obj){
+			if(err){
+				logger.warn('error searching groups by name'+ err);
+				callback(err,null);
+			}
+			else
+			{
+				logger.info('dupe search returned: "'+util.inspect(obj)+'"');
+				if(obj&&obj.length!=0)
+				{
+					errMsg='name '+groupObj.name+' is not unique, so we can\'t add it';
+					logger.warn(errMsg);
+					callback(errMsg,null)
+				}
+				else
+				{
+					logger.info('name is unique, so we will add it');
+					groupsDb.insert(groupObj,callback);
+				}
+			}
+		});
+	}
+};
+FmDataMgr.prototype.editGroup = function(groupObj,callback) {
+	this.db.groups.update({_id:groupObj._id},groupObj,callback);
+}
+FmDataMgr.prototype.__mongo_projection=function(collection, projection) {
 	logger.trace('collection: ' + util.inspect(collection));
 	logger.trace('projection: ' + util.inspect(projection));
 	var ret = [];
