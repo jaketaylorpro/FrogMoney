@@ -18,12 +18,13 @@ router.get('/', function(req, res) {
 				dataMgr.getPaymentsForUserId(objTop.payload.id, callback);
 			},
 		    function(callback) {
-				dataMgr.getDues({name:'.'},callback);// dot in a projection is a special case, it will return just the value and not an object
+				dataMgr.getDues(callback);// dot in a projection is a special case, it will return just the value and not an object
 		    }
 		], function(err,results){
 			var user=results[0];
 			var payments=results[1];
-			var allDues=results[2];
+			var allDuesObjs=results[2];
+			var allDues=dataMgr.__mongo_projection(allDuesObjs,{name:'.'});
 			logger.trace('payments callback: ' + util.inspect(err) + ',' + util.inspect(results));
 			res.render('payments', {
 				navbar: constants.getNavbar('payments'),
